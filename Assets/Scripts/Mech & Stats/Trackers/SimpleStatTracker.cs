@@ -3,12 +3,14 @@ using UnityEngine;
 public class SimpleStatTracker : MonoBehaviour
 {
     public Mech m_targetMech {get; private set;}
-    public string m_statKey {get; private set;}
+    [SerializeField] private string m_statKey;
     public StatBlock m_targetBlock {get; private set;}
 
     protected virtual void Start()
     {
         m_targetMech = GetComponentInParent<Mech>();
+        if(m_statKey != "")
+            GetStat(m_statKey);
     }
     public void GiveMech(Mech mech)
     {
@@ -35,9 +37,10 @@ public class SimpleStatTracker : MonoBehaviour
 
     public virtual void UpdateStat(float value)
     {
+        m_targetBlock.UpdateValue(value);
         CheckStat();
     }
-    protected virtual void CheckStat()
+    public virtual void CheckStat()
     {
 
     }

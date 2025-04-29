@@ -28,10 +28,10 @@ public class UITracker : SimpleStatTracker
     }
     public override void UpdateStat(float value)
     {
-        m_statNum.text = m_targetBlock.UpdateValue(value).ToString();
         base.UpdateStat(value);
+        m_statNum.text = m_targetBlock.currentValue.ToString();
     }
-    protected override void CheckStat()
+    public override void CheckStat()
     {
         m_statNum.text = m_targetBlock.currentValue.ToString();
         m_image.color = m_gradient.Evaluate(m_targetBlock.capPercent);
