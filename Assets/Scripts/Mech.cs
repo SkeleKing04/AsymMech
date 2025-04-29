@@ -4,12 +4,21 @@ using UnityEngine;
 public class Mech : MonoBehaviour
 {
     public static List<Mech> Instances  {get; private set;}
+    public static void AddInstance(Mech mech)
+    {
+        if(Instances == null)
+            Instances = new();
+
+        Instances.Add(mech);
+    }
     public int InstIndex {get => GetInstanceIndex(); }
     public MechStats Stats = new();
+    [SerializeField] string m_statFile;
 
-    void Start()
+    void Awake()
     {
-        Instances.Add(this);
+        AddInstance(this);
+        Stats.LoadStats(m_statFile);
     }
     public int GetInstanceIndex(Mech targetMech = null)
     {

@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
-using UnityEngine.Rendering;
 
 public class StatBlock
 {
@@ -11,6 +10,7 @@ public class StatBlock
     public float highCap {get; private set;}
     public bool reachedLowCap {get => currentValue <= lowCap;}
     public bool reachedHighCap {get => currentValue >= highCap;}
+    public float capPercent {get => (currentValue - lowCap) / (highCap - lowCap);}
     public StatBlock(float current = 0, float lCap = 0, float hCap = 0)
     {
         currentValue = current;
@@ -24,19 +24,24 @@ public class StatBlock
         return currentValue;
     }
 }
-public class MechStats : MonoBehaviour
+public class MechStats
 {
     protected Dictionary<string, StatBlock> m_stats = new Dictionary<string, StatBlock>();
     public StatBlock GetStat(string key)
     {
-        return m_stats[key];
+        if(m_stats.ContainsKey(key))
+            return m_stats[key];
+        else
+        {
+            Debug.LogWarning("Invalid key reference");
+            return null;
+        }
+    }
+    public string[] DumpKeys()
+    {
+        return m_stats.Keys.ToArray();
     }
     [SerializeField] private string m_statFilePath;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    protected virtual void Start()
-    {
-        LoadStats(m_statFilePath);
-    }
     public bool LoadStats(string path)
     {
         //Check if valid file path
