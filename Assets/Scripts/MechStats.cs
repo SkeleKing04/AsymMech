@@ -1,4 +1,7 @@
+using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 using UnityEngine.Rendering;
 
 public class StatBlock
@@ -13,20 +16,44 @@ public class StatBlock
         currentValue = current;
         lowCap = lCap;
         highCap = hCap;
+        UpdateValue(0);
     }
-    public float UpdateValue(float incomingValue)
+    public float UpdateValue(float incomingValue, bool clamp = true)
     {
-        currentValue = Mathf.Clamp(currentValue + incomingValue, lowCap, highCap);
+        currentValue = clamp ? Mathf.Clamp(currentValue + incomingValue, lowCap, highCap) : currentValue + incomingValue;
         return currentValue;
     }
 }
-[CreateAssetMenu(fileName = "Mech Stats", menuName = "Mech Stuff/Mech Stats")]
-public class MechStats : DictionaryAsset<StatBlock>
+public class MechStats : MonoBehaviour
 {
+    protected Dictionary<string, StatBlock> m_stats = new Dictionary<string, StatBlock>();
+    [SerializeField] private string m_statFilePath;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    protected virtual void Start()
     {
-
+        LoadStats(m_statFilePath);
+    }
+    public bool LoadStats(string path)
+    {
+        //Check if valid file path
+        if(path != "" && path.EndsWith(".csv"))
+        {
+            //Check if there even is a file
+            if(File.Exists(path))
+            {
+                //read the file
+                var linesOut = File.ReadLines(path);
+                //clear the dictionary and save to it
+                m_stats = new Dictionary<string, StatBlock>();
+                foreach(var line in linesOut)
+                {
+                    string[] values = line.Split(',');
+                    m_stats.Add(values[0], new StatBlock(0, float.Parse(values[1]), float.Parse(values[2])));
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
     // Update is called once per frame
