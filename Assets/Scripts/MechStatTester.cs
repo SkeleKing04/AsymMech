@@ -9,12 +9,10 @@ public class MechStatTester : MechStats
     {
         base.Start();
 
-        foreach(var entry in m_stats)
-        {
             GameObject newO = Instantiate(BasicStatAffectObject);
-            newO.GetComponent<SimpleStatTracker>().GiveStat(entry.Value);
+            newO.GetComponent<SimpleStatTracker>().GiveMech(this);
             newO.transform.SetParent(Parent, false);
-        }
+
     }
 
     // Update is called once per frame

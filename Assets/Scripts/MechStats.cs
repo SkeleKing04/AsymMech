@@ -27,6 +27,10 @@ public class StatBlock
 public class MechStats : MonoBehaviour
 {
     protected Dictionary<string, StatBlock> m_stats = new Dictionary<string, StatBlock>();
+    public StatBlock GetStat(string key)
+    {
+        return m_stats[key];
+    }
     [SerializeField] private string m_statFilePath;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     protected virtual void Start()
